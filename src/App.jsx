@@ -1,43 +1,34 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import Component from "./Component";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useState, createContext } from "react";
+import Layout from "./components/Layout";
+import PartOne from "./components/part1/PartOne";
+import Home from "./components/Home";
+import PartTwo from "./components/part2/PartTwo";
 
-const fruits = [
-  { id: 1, name: "Banana", color: "yellow" },
-  { id: 2, name: "Apple", color: "red" },
-  { id: 3, name: "Orange", color: "orange" },
-  { id: 4, name: "Grape", color: "purple" },
-];
+export const AppContext = createContext();
 
 function App() {
   const [nightMode, setNightMode] = useState(false);
 
+  const [name, setName] = useState("");
+
   const changeTheme = () => {
     nightMode ? setNightMode(false) : setNightMode(true);
   };
+
   return (
-    <div className={`${nightMode ? "night-mode" : ""} container`}>
-      <div className="filler">
-        <h1>Part I</h1>
-        <hr />
-        <Component />
-        <Component title={"Basic Component with props"} />
-        <hr />
-        <Component title={"Rendering Lists/Arrays"} />
-        <div className="fruits">
-          {fruits.map((fruit) => (
-            <Component key={fruit.id} title={fruit.name} color={fruit.color} />
-          ))}
-        </div>
-        <hr />
-        <Component title={"useState"} />
-        <button onClick={changeTheme}>
-          {nightMode ? "Day Mode" : "Night Mode"}
-        </button>
-      </div>
-    </div>
+    <AppContext.Provider value={{ changeTheme, nightMode, name, setName }}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="partone" element={<PartOne />} />
+            <Route path="parttwo" element={<PartTwo />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AppContext.Provider>
   );
 }
 
